@@ -18,7 +18,15 @@ RUN apk add --no-cache \
     php-simplexml \
     php-tokenizer \
     php-xmlwriter \
-    php-fileinfo
+    php-fileinfo \
+    php-pdo \
+    php-pdo_sqlite \
+    php-sqlite3
+
+# Set dummy environment variables so Laravel can boot in-memory during build
+ENV DB_CONNECTION=sqlite
+ENV DB_DATABASE=:memory:
+ENV APP_KEY=base64:yhVqVwGjZ4Jz+Hwqn7mK1Jp8uD/29xJpG6tB7+c1R1I=
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
