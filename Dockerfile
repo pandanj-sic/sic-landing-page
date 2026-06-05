@@ -30,7 +30,7 @@ COPY package*.json composer.json composer.lock ./
 
 # Install dependencies
 RUN npm install --no-audit --no-fund
-RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --ignore-platform-reqs
 
 # Copy application files
 COPY . .
