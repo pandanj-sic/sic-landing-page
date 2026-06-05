@@ -36,7 +36,7 @@ RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction --ig
 COPY . .
 
 # Generate autoloader and build assets
-RUN composer dump-autoload --no-dev --optimize
+RUN composer dump-autoload --no-dev --optimize --no-scripts
 RUN npm run build
 
 # Stage 2: Production PHP & Nginx Runtime

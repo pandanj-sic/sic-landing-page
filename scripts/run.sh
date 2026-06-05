@@ -3,7 +3,8 @@
 echo "Starting production post-deployment scripts..."
 
 # Optimize Laravel for production
-echo "Caching configuration and routes..."
+echo "Discovering packages and caching configurations..."
+php artisan package:discover --ansi
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
