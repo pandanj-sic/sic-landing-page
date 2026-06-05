@@ -47,23 +47,28 @@ COPY . .
 RUN composer dump-autoload --no-dev --optimize --no-scripts
 RUN npm run build
 
-# Stage 2: Production PHP & Nginx Runtime
-FROM richarvey/nginx-php-fpm:3.1.6
+# Remove development files to shrink the image
+RUN rm -rf node_modules
+
+
+# Stage 2: Production PHP & Nginx Runtime (PHP 8.4)
+FROM serversideup/php:8.4-fpm-nginx
 
 WORKDIR /var/www/html
 
 # Copy pre-built application files, vendor dependencies, and assets from Stage 1
-COPY --from=builder /app /var/www/html
+COPY --from=builder --chown=www-data:www-data /app /var/www/html
 
-# Setup environment variables for richarvey/nginx-php-fpm
-ENV WEBROOT /var/www/html/public
+# Copy the entrypoint script into ServerSideUp's automatic startup hooks directory
+COPY --from=builder --chown=www-data:www-data /app/scripts/run.sh /opt/docker/provision/entrypoint.d/run.sh
+
+# Ensure the provision script is executable
+RUN chmod +x /opt/docker/provision/entrypoint.d/run.sh
+
+# Set production environment variables
 ENV APP_ENV production
 ENV APP_DEBUG false
 ENV LOG_CHANNEL stderr
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
-ENV SKIP_COMPOSER 1
 
-# Expose port 80
-EXPOSE 80
+# Expose port 8080 (serversideup default port)
+EXPOSE 8080
